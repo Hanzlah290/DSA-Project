@@ -1,0 +1,4 @@
+RouteID Source Destination Distance(km) Time(min)
+1       CityA   CityB       120          90
+2       CityB   CityC       150          120
+3       CityA   CityD       80           60

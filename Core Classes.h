@@ -1,16 +1,38 @@
+#ifndef CORE_CLASSES_H
+#define CORE_CLASSES_H
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
+
+#endif
 
 class Intersection {
 public:
     int id;
     std::string name;
 
+    // Parameterized constructor
     Intersection(int id, const std::string& name) : id(id), name(name) {}
+
+    // Default constructor
+    Intersection() : id(0), name("") {}
+
+    // Getter for id
+    int getId() const {
+        return id;
+    }
+
+    // Getter for name
+    std::string getName() const {
+        return name;
+    }
+
+    // Other methods if any...
 };
+
 
 class Road {
 public:
@@ -19,9 +41,31 @@ public:
     double distance;
     double traffic;
 
+    // Constructor
     Road(int start, int end, double distance, double traffic = 0.0)
         : start(start), end(end), distance(distance), traffic(traffic) {}
+
+    // Getter for start
+    int getStart() const {
+        return start;
+    }
+
+    // Getter for end
+    int getEnd() const {
+        return end;
+    }
+
+    // Getter for distance
+    double getDistance() const {
+        return distance;
+    }
+
+    // Getter for traffic
+    double getTraffic() const {
+        return traffic;
+    }
 };
+
 
 class Graph {
 public:
@@ -109,4 +153,24 @@ public:
         outfile.close();
         std::cout << "Graph data saved successfully to " << filename << std::endl;
     }
+   
+    void displayMap() {
+    // Display intersections
+    for (const auto& intersection : intersections) {
+        std::cout << "Intersection ID: " << intersection.second.getId()
+                  << ", Name: " << intersection.second.getName() << std::endl;
+    }
+
+    // Display roads between intersections
+    std::cout << "\nRoads between intersections:\n";
+    for (const auto& [start, roads] : adjacencyList) {
+        for (const auto& road : roads) {
+            std::cout << "Road from Intersection " << road.getStart() << " to " << road.getEnd()
+                      << " with distance: " << road.getDistance() << " km and traffic: " << road.getTraffic() << std::endl;
+        }
+    }
+   }
+
+  void findShortestPath(int startId, int endId);
 };
+
