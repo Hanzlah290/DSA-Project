@@ -177,6 +177,7 @@ public:
   void findShortestPath(int startId, int endId);
 };
 
+// DjikstrasAlgorithm
 void Graph::findShortestPath(int startId, int endId) {
     std::unordered_map<int, double> distances;
     std::unordered_map<int, int> previous;
