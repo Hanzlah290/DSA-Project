@@ -1,14 +1,14 @@
 #include<iostream>
 #include "Core Classes.h"
-#include "DijkstraAlgorithm.h"
+//#include "DijkstraAlgorithm.h"
 
 using namespace std;
 
 
 void displayMenu() {
     cout << "========== Traffic Network Management System ==========\n";
-    cout << "1. Add an Intersection\n";
-    cout << "2. Connect Intersections\n";
+    cout << "1. Add an _Intersection\n";
+    cout << "2. Connect _Intersections\n";
     cout << "3. Display the Map\n";
     cout << "4. Find Shortest Path\n";
     cout << "5. Exit\n";
@@ -25,31 +25,31 @@ void menu(Graph& network) {
 
         switch (choice) {
             case 1:
-                // Add an intersection
+                // Add an _Intersection
                 {
                     int id;
                     string name;
-                    cout << "Enter Intersection ID: ";
+                    cout << "Enter _Intersection ID: ";
                     cin >> id;
-                    cout << "Enter Intersection Name: ";
+                    cout << "Enter _Intersection Name: ";
                     cin.ignore();
                     getline(cin, name);
-                    network.addIntersection(id, name);
+                    network.add_Intersection(id, name);
                 }
                 break;
 
             case 2:
-                // Connect intersections
+                // Connect _Intersections
                 {
                     int id1, id2;
                     double distance;
-                    cout << "Enter the first Intersection ID: ";
+                    cout << "Enter the first _Intersection ID: ";
                     cin >> id1;
-                    cout << "Enter the second Intersection ID: ";
+                    cout << "Enter the second _Intersection ID: ";
                     cin >> id2;
                     cout << "Enter the distance between them: ";
                     cin >> distance;
-                    network.addRoad(id1, id2, distance);
+                    network.addRoads(id1, id2, distance);
                 }
                 break;
 
@@ -62,9 +62,9 @@ void menu(Graph& network) {
                 // Find the shortest path
                 {
                     int startId, endId;
-                    cout << "Enter start Intersection ID: ";
+                    cout << "Enter start _Intersection ID: ";
                     cin >> startId;
-                    cout << "Enter end Intersection ID: ";
+                    cout << "Enter end _Intersection ID: ";
                     cin >> endId;
                     network.findShortestPath(startId, endId);
                 }
@@ -87,7 +87,7 @@ int main() {
     Graph graph; // Create an instance of the Graph class
 
     // Load data from a file (optional)
-    graph.loadFromFile("graph.txt");
+    graph.loadFromFile("route.txt");
 
     // Call the menu function with the graph instance
     menu(graph);

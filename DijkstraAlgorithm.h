@@ -1,16 +1,18 @@
 #ifndef DJIKSTRAS_ALGORITHM_H
 #define DJIKSTRAS_ALGORITHM_H
-#include <queue>
-#include <vector>
-#include <unordered_map>
-#include <limits>
-#include <iostream>
-#include <algorithm>
+
 
 #include "Core Classes.h"
 #endif // DJIKSTRAS_ALGORITHM_H
 
-void Graph::findShortestPath(int startId, int endId) {
+class Graph {
+public:
+    void findShortestPath(int startId, int endId);
+};
+
+
+
+/*void Graph::findShortestPath(int startId, int endId) {
     std::unordered_map<int, double> distances;
     std::unordered_map<int, int> previous;
     std::unordered_map<int, bool> visited; // Added to track visited nodes
@@ -21,10 +23,10 @@ void Graph::findShortestPath(int startId, int endId) {
     std::priority_queue<int, std::vector<int>, decltype(compare)> pq(compare);
 
     // Initialize distances and previous nodes
-    for (const auto& intersection : intersections) {
-        distances[intersection.first] = std::numeric_limits<double>::infinity();
-        previous[intersection.first] = -1;
-        visited[intersection.first] = false; // Initialize visited map
+    for (const auto& _Intersection : _Intersections) {
+        distances[_Intersection.first] = std::numeric_limits<double>::infinity();
+        previous[_Intersection.first] = -1;
+        visited[_Intersection.first] = false; // Initialize visited map
     }
 
     distances[startId] = 0;
@@ -45,9 +47,9 @@ void Graph::findShortestPath(int startId, int endId) {
         }
 
         // Update distances to neighbors
-        for (const Road& road : adjacencyList[current]) {
-            int neighbor = road.getEnd();
-            double newDistance = distances[current] + road.getDistance();
+        for (const Road& Roads : adjacencyList[current]) {
+            int neighbor = Roads.getEnd();
+            double newDistance = distances[current] + Roads.getDistance();
 
             if (newDistance < distances[neighbor]) {
                 distances[neighbor] = newDistance;
@@ -59,7 +61,7 @@ void Graph::findShortestPath(int startId, int endId) {
 
     // Print the shortest path
     if (distances[endId] == std::numeric_limits<double>::infinity()) {
-        std::cout << "No path found from Intersection " << startId << " to " << endId << std::endl;
+        std::cout << "No path found from _Intersection " << startId << " to " << endId << std::endl;
     } else {
         std::cout << "Shortest path distance: " << distances[endId] << " km\n";
         std::vector<int> path;
@@ -74,7 +76,7 @@ void Graph::findShortestPath(int startId, int endId) {
         }
         std::cout << std::endl;
     }
-}
+}*/
 
 
 

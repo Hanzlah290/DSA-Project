@@ -6,19 +6,22 @@
 #include <unordered_map>
 #include <vector>
 #include <algorithm>
+#include <queue>
+#include <limits>
+//#include "DijkstraAlgorithm.h"
 
 #endif
 
-class Intersection {
+class _Intersection {
 public:
     int id;
     std::string name;
 
     // Parameterized constructor
-    Intersection(int id, const std::string& name) : id(id), name(name) {}
+    _Intersection(int id, const std::string& name) : id(id), name(name) {}
 
     // Default constructor
-    Intersection() : id(0), name("") {}
+    _Intersection() : id(0), name("") {}
 
     // Getter for id
     int getId() const {
@@ -69,16 +72,16 @@ public:
 
 class Graph {
 public:
-    std::unordered_map<int, Intersection> intersections;
+    std::unordered_map<int, _Intersection> _Intersections;
     std::unordered_map<int, std::vector<Road>> adjacencyList;
 
-    // Add an intersection to the graph
-    void addIntersection(int id, const std::string& name) {
-        intersections[id] = Intersection(id, name);
+    // Add an _Intersection to the graph
+    void add_Intersection(int id, const std::string& name) {
+        _Intersections[id] = _Intersection(id, name);
     }
 
     // Add a road to the graph
-    void addRoad(int start, int end, double distance, double traffic = 0.0) {
+    void addRoads(int start, int end, double distance, double traffic = 0.0) {
         adjacencyList[start].push_back(Road(start, end, distance, traffic));
     }
 
@@ -91,26 +94,26 @@ public:
         }
 
         std::string line;
-        bool isReadingIntersections = false;
+        bool isReading_Intersections = false;
         bool isReadingRoads = false;
 
         while (std::getline(infile, line)) {
             // Skip comments or empty lines
             if (line.empty() || line[0] == '#') {
-                if (line == "# Intersections (ID, Name)") isReadingIntersections = true, isReadingRoads = false;
-                if (line == "# Roads (StartID, EndID, Distance, Traffic)") isReadingRoads = true, isReadingIntersections = false;
+                if (line == "# _Intersections (ID, Name)") isReading_Intersections = true, isReadingRoads = false;
+                if (line == "# Roads (StartID, EndID, Distance, Traffic)") isReadingRoads = true, isReading_Intersections = false;
                 continue;
             }
 
             std::istringstream ss(line);
-            if (isReadingIntersections) {
+            if (isReading_Intersections) {
                 int id;
                 std::string name;
                 char delim;
 
                 ss >> id >> delim >> name;
                 if (delim == ',') {
-                    addIntersection(id, name);
+                    add_Intersection(id, name);
                 }
             } else if (isReadingRoads) {
                 int start, end;
@@ -119,7 +122,7 @@ public:
 
                 ss >> start >> delim >> end >> delim >> distance >> delim >> traffic;
                 if (delim == ',') {
-                    addRoad(start, end, distance, traffic);
+                    addRoads(start, end, distance, traffic);
                 }
             }
         }
@@ -136,10 +139,10 @@ public:
             return;
         }
 
-        // Save intersections
-        outfile << "# Intersections (ID, Name)" << std::endl;
-        for (const auto& [id, intersection] : intersections) {
-            outfile << id << "," << intersection.name << std::endl;
+        // Save _Intersections
+        outfile << "# _Intersections (ID, Name)" << std::endl;
+        for (const auto& [id, _Intersection] : _Intersections) {
+            outfile << id << "," << _Intersection.name << std::endl;
         }
 
         // Save roads
@@ -155,17 +158,17 @@ public:
     }
    
     void displayMap() {
-    // Display intersections
-    for (const auto& intersection : intersections) {
-        std::cout << "Intersection ID: " << intersection.second.getId()
-                  << ", Name: " << intersection.second.getName() << std::endl;
+    // Display _Intersections
+    for (const auto& _Intersection : _Intersections) {
+        std::cout << "_Intersection ID: " << _Intersection.second.getId()
+                  << ", Name: " << _Intersection.second.getName() << std::endl;
     }
 
-    // Display roads between intersections
-    std::cout << "\nRoads between intersections:\n";
+    // Display roads between _Intersections
+    std::cout << "\nRoads between _Intersections:\n";
     for (const auto& [start, roads] : adjacencyList) {
         for (const auto& road : roads) {
-            std::cout << "Road from Intersection " << road.getStart() << " to " << road.getEnd()
+            std::cout << "Road from _Intersection " << road.getStart() << " to " << road.getEnd()
                       << " with distance: " << road.getDistance() << " km and traffic: " << road.getTraffic() << std::endl;
         }
     }
@@ -173,4 +176,76 @@ public:
 
   void findShortestPath(int startId, int endId);
 };
+
+void Graph::findShortestPath(int startId, int endId) {
+    std::unordered_map<int, double> distances;
+    std::unordered_map<int, int> previous;
+    std::unordered_map<int, bool> visited; // Added to track visited nodes
+
+    auto compare = [&distances](int a, int b) {
+        return distances[a] > distances[b];
+    };
+    std::priority_queue<int, std::vector<int>, decltype(compare)> pq(compare);
+
+    // Initialize distances and previous nodes
+    for (const auto& _Intersection : _Intersections) {
+        distances[_Intersection.first] = std::numeric_limits<double>::infinity();
+        previous[_Intersection.first] = -1;
+        visited[_Intersection.first] = false; // Initialize visited map
+    }
+
+    distances[startId] = 0;
+    pq.push(startId);
+
+    while (!pq.empty()) {
+        int current = pq.top();
+        pq.pop();
+
+        // Skip already visited nodes
+        if (visited[current]) {
+            continue;
+        }
+        visited[current] = true; // Mark the current node as visited
+
+        if (current == endId) {
+            break; // Stop early if we reach the destination
+        }
+
+        // Update distances to neighbors
+        for (const Road& road : adjacencyList[current]) {
+            int neighbor = road.getEnd();
+            double newDistance = distances[current] + road.getDistance();
+
+            if (newDistance < distances[neighbor]) {
+                distances[neighbor] = newDistance;
+                previous[neighbor] = current;
+                pq.push(neighbor);
+            }
+        }
+    }
+
+    // Print the shortest path
+    if (distances[endId] == std::numeric_limits<double>::infinity()) {
+        std::cout << "No path found from _Intersection " << startId << " to " << endId << std::endl;
+    } else {
+        std::cout << "Shortest path from _Intersection " << startId << " to _Intersection " << endId << ":\n";
+        std::vector<int> path;
+        double totalWeight = distances[endId];
+        
+        for (int at = endId; at != -1; at = previous[at]) {
+            path.push_back(at);
+        }
+        std::reverse(path.begin(), path.end());
+
+        // Display the path
+        for (size_t i = 0; i < path.size(); ++i) {
+            std::cout << path[i];
+            if (i < path.size() - 1) {
+                std::cout << " -> ";
+            }
+        }
+        std::cout << "\nTotal weight: " << totalWeight << std::endl;
+    }
+}
+
 
