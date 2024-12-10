@@ -44,7 +44,7 @@ public:
     double distance;
     double traffic;
 
-    // Constructor
+    // Updated Road class constructor to handle traffic as input
     Road(int start, int end, double distance, double traffic = 0.0)
         : start(start), end(end), distance(distance), traffic(traffic) {}
 
@@ -177,22 +177,21 @@ public:
   void findShortestPath(int startId, int endId);
 };
 
-// DjikstrasAlgorithm
+// Modified Dijkstra's algorithm
 void Graph::findShortestPath(int startId, int endId) {
     std::unordered_map<int, double> distances;
     std::unordered_map<int, int> previous;
-    std::unordered_map<int, bool> visited; // Added to track visited nodes
+    std::unordered_map<int, bool> visited;
 
     auto compare = [&distances](int a, int b) {
         return distances[a] > distances[b];
     };
     std::priority_queue<int, std::vector<int>, decltype(compare)> pq(compare);
 
-    // Initialize distances and previous nodes
     for (const auto& _Intersection : _Intersections) {
         distances[_Intersection.first] = std::numeric_limits<double>::infinity();
         previous[_Intersection.first] = -1;
-        visited[_Intersection.first] = false; // Initialize visited map
+        visited[_Intersection.first] = false;
     }
 
     distances[startId] = 0;
@@ -202,20 +201,20 @@ void Graph::findShortestPath(int startId, int endId) {
         int current = pq.top();
         pq.pop();
 
-        // Skip already visited nodes
         if (visited[current]) {
             continue;
         }
-        visited[current] = true; // Mark the current node as visited
+        visited[current] = true;
 
         if (current == endId) {
-            break; // Stop early if we reach the destination
+            break;
         }
 
-        // Update distances to neighbors
         for (const Road& road : adjacencyList[current]) {
             int neighbor = road.getEnd();
-            double newDistance = distances[current] + road.getDistance();
+            double travelTime = road.getDistance() * (1 + road.getTraffic()); // Including traffic factor
+
+            double newDistance = distances[current] + travelTime;
 
             if (newDistance < distances[neighbor]) {
                 distances[neighbor] = newDistance;
@@ -225,7 +224,6 @@ void Graph::findShortestPath(int startId, int endId) {
         }
     }
 
-    // Print the shortest path
     if (distances[endId] == std::numeric_limits<double>::infinity()) {
         std::cout << "No path found from _Intersection " << startId << " to " << endId << std::endl;
     } else {
@@ -238,15 +236,13 @@ void Graph::findShortestPath(int startId, int endId) {
         }
         std::reverse(path.begin(), path.end());
 
-        // Display the path
         for (size_t i = 0; i < path.size(); ++i) {
             std::cout << path[i];
             if (i < path.size() - 1) {
                 std::cout << " -> ";
             }
         }
-        std::cout << "\nTotal weight: " << totalWeight << std::endl;
+        std::cout << "\nTotal weight (considering traffic): " << totalWeight << std::endl;
     }
 }
-
 

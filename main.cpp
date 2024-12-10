@@ -39,6 +39,23 @@ void menu(Graph& network) {
                 break;
 
             case 2:
+            // Connect _Intersections
+                {
+                    int id1, id2;
+                    double distance, traffic;
+                    cout << "Enter the first _Intersection ID: ";
+                    cin >> id1;
+                    cout << "Enter the second _Intersection ID: ";
+                    cin >> id2;
+                    cout << "Enter the distance between them: ";
+                    cin >> distance;
+                    cout << "Enter the traffic level between them (0.0 to 1.0): ";
+                    cin >> traffic; // Assuming traffic is represented as a value from 0.0 (no traffic) to 1.0 (max traffic)
+                    network.addRoads(id1, id2, distance, traffic);
+                }
+                break;
+
+            /*case 2:
                 // Connect _Intersections
                 {
                     int id1, id2;
@@ -51,7 +68,7 @@ void menu(Graph& network) {
                     cin >> distance;
                     network.addRoads(id1, id2, distance);
                 }
-                break;
+                break;*/
 
             case 3:
                 // Display the network
